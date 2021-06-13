@@ -30,14 +30,16 @@ import math
 # Initialize figure
 fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 
-#Global Variables
+#Global Variables:
 #Gains:
-KP = 1 #Position Gain
+KP = 0.1 #Position Gain
 
 #Map specific:
-spacingResolution = 10  #defines number of points between each descrete position
 mapBoundaryX = 10   # Map x length
 mapBoundaryY = 10   # Map y length
+reso = 5    #Map resolution
+
+spacingResolution = (mapBoundaryX * reso) + 1
 
 xAxis = np.linspace(0, mapBoundaryX, spacingResolution)
 yAxis = np.linspace(0, mapBoundaryY, spacingResolution)
@@ -49,13 +51,24 @@ robotY = 0  #initial robot Y position
 goalX = 5   #goal X position
 goalY = 5   #goal Y position
 
+# xGoalOnGrid = (goalX/mapBoundaryX) * spacingResolution
+# yGoalOnGrid = (goalY/mapBoundaryY) * spacingResolution
+
+xGoalOnGrid = goalX * reso
+yGoalOnGrid = goalY * reso
+
 #potential field generation:
 uPot = np.zeros(shape=(len(xAxis),len(yAxis)))
+uAtr = np.zeros(shape=(len(xAxis),len(yAxis)))
+uRep = np.zeros(shape=(len(xAxis),len(yAxis)))
 
-
+#Calculate Attraction
 for i in range(len(xAxis)):
     for j in range(len(yAxis)):
-        uPot[i][j] = 1 / 2 * KP * math.sqrt(((goalX-(i))**2+(goalY - (j))**2))
+        uAtr[i][j] = 1 / 2 * KP * math.sqrt(((xGoalOnGrid-(i))**2+(yGoalOnGrid - (j))**2))
+
+
+uPot = uAtr + uRep
 
 print(uPot.shape)
 print(uPot)
