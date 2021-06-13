@@ -60,9 +60,11 @@ obsX = 5.0
 obsY = 5.0
 
 #Position scaling for grid:
-
 xGoalOnGrid = goalX * reso
 yGoalOnGrid = goalY * reso
+
+xRobotOnGrid = robotX * reso
+yRobotOnGrid = robotY * reso
 
 xObsOnGrid = obsX * reso
 yObsOnGrid = obsY * reso
@@ -93,8 +95,8 @@ for i in range(len(xAxis)):
 uPot = uAtr + uRep
 
 # for debugging
-# print(uRep.shape)
-# print(uRep)
+# print(uPot.shape)
+# print(uPot)
 
 xAxis, yAxis = np.meshgrid(xAxis, yAxis)
 
@@ -102,8 +104,20 @@ surf = ax.plot_surface(xAxis, yAxis, uPot, cmap=cm.coolwarm,
                        linewidth=0, antialiased=True)
 
 
-# for i in range(5):
-#     ax.scatter(math.sin(i),i)
-#     plt.pause(0.001)
+#Simulate motion:
+distanceToGoal = math.sqrt((xRobotOnGrid - xGoalOnGrid)**2+(yRobotOnGrid - yGoalOnGrid)**2)
+distanceTolerance = 1
+
+while(distanceToGoal >= distanceTolerance):
+    moveX = 0.5
+    moveY = 0.5
+
+    xRobotOnGrid += moveX
+    yRobotOnGrid += moveY
+    pot = uPot[int(xRobotOnGrid)][int(yRobotOnGrid)]
+    distanceToGoal = math.sqrt((xRobotOnGrid - goalX) ** 2 + (yRobotOnGrid - goalY) ** 2)
+    print(distanceToGoal)
+    ax.scatter(xRobotOnGrid, yRobotOnGrid, np.max(uPot))
+    plt.pause(0.005)
 
 plt.show()
