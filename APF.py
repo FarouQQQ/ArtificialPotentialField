@@ -27,25 +27,38 @@ from matplotlib.ticker import LinearLocator
 import numpy as np
 import math
 
-KP = 10
-
-robotX = 0
-robotY = 0
-
-goalX = 5
-goalY = 5
-
+# Initialize figure
 fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 
-xAxis = np.linspace(0,10,10)
-yAxis = np.linspace(0,10,10)
+#Global Variables
+#Gains:
+KP = 1 #Position Gain
 
+#Map specific:
+spacingResolution = 10  #defines number of points between each descrete position
+mapBoundaryX = 10   # Map x length
+mapBoundaryY = 10   # Map y length
+
+xAxis = np.linspace(0, mapBoundaryX, spacingResolution)
+yAxis = np.linspace(0, mapBoundaryY, spacingResolution)
+
+#Robot specific
+robotX = 0  #initial robot X position
+robotY = 0  #initial robot Y position
+
+goalX = 5   #goal X position
+goalY = 5   #goal Y position
+
+#potential field generation:
 uPot = np.zeros(shape=(len(xAxis),len(yAxis)))
 
 
 for i in range(len(xAxis)):
     for j in range(len(yAxis)):
-        uPot[i][j] = 1 / 2 * KP * math.sqrt(((goalX-(robotX+i))**2+(goalY - (robotY+j))**2))
+        uPot[i][j] = 1 / 2 * KP * math.sqrt(((goalX-(i))**2+(goalY - (j))**2))
+
+print(uPot.shape)
+print(uPot)
 
 xAxis, yAxis = np.meshgrid(xAxis, yAxis)
 
@@ -53,8 +66,8 @@ surf = ax.plot_surface(xAxis, yAxis, uPot, cmap=cm.coolwarm,
                        linewidth=0, antialiased=False)
 
 
-for i in range(5):
-    ax.scatter(math.sin(i),i)
-    plt.pause(0.001)
+# for i in range(5):
+#     ax.scatter(math.sin(i),i)
+#     plt.pause(0.001)
 
 plt.show()
