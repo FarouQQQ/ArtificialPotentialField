@@ -33,8 +33,8 @@ ax = fig.add_subplot(1, 2, 1, projection='3d')
 # Global Variables:
 
 # Map specific:
-mapBoundaryX = 15  # Map x length
-mapBoundaryY = 15  # Map y length
+mapBoundaryX = 11  # Map x length
+mapBoundaryY = 11  # Map y length
 reso = 50  # Map resolution
 
 # repulsion gains:
@@ -103,10 +103,10 @@ uPot = uAtr + uRep
 
 xAxis, yAxis = np.meshgrid(xAxis, yAxis)
 
-surf = ax.plot_surface(xAxis, yAxis, uPot, cmap=cm.coolwarm, linewidth=0, antialiased=True)
+surf = ax.plot_surface(xAxis, yAxis, uPot, cmap=cm.viridis, linewidth=0, antialiased=True)
 
 ax = fig.add_subplot(1, 2, 2)
-imshow(uPot)
+imshow(uPot, origin='lower',extent=[0,int(mapBoundaryX),0,int(mapBoundaryY)])
 colorbar()
 
 # Simulate motion:
