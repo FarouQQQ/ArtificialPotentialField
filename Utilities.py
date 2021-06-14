@@ -11,16 +11,18 @@ def getAngleAndDirection(point1,point2):
 
     angle = math.degrees(math.atan2(yDef,xDef))
 
-    if angle >= 0 and angle<= 90:
-        quad = 1
-    elif angle >90 and angle<= 180:
-        quad = 2
-    elif angle >180 and angle<= 270:
+    if angle > 0:
+        if angle >= 0 and angle <= 90:
+            quad = 1
+        elif angle >90 and angle <= 180:
+            quad = 2
+
+    elif angle < 0 and angle <= -90:
         quad = 3
     else:
         quad = 4
 
-    return angle , quad
+    return angle, quad
 
 
 if __name__ == '__main__':
