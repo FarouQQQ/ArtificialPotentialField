@@ -1,4 +1,4 @@
-'''
+"""
 Artificial potential fields
 Basic idea :
 -----------
@@ -16,7 +16,7 @@ k_p   = position gain
 eta   = constant gain
 rho   = shortest distance to the obstacle
 rho_0 = limit distance of the potential field influence
-'''
+"""
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import imshow, show, colorbar
 from matplotlib import cm
@@ -28,37 +28,37 @@ import math
 # Initialize figure
 fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 
-#Global Variables:
+# Global Variables:
 
-#Map specific:
-mapBoundaryX = 15   # Map x length
-mapBoundaryY = 15   # Map y length
-reso = 50    #Map resolution
+# Map specific:
+mapBoundaryX = 15  # Map x length
+mapBoundaryY = 15  # Map y length
+reso = 50  # Map resolution
 
-#repulsion gains:
+# repulsion gains:
 eta = 5.0
 rho_node = 5.0
 
-#Atracton Gains:
-KP = 2 #Position Gain
+# Attraction Gains:
+KP = 2  # Position Gain
 
 spacingResolution = (mapBoundaryX * reso) + 1
 
 xAxis = np.linspace(0, mapBoundaryX, spacingResolution)
 yAxis = np.linspace(0, mapBoundaryY, spacingResolution)
 
-#Robot specific
-robotX = 0.0  #initial robot X position
-robotY = 0.0  #initial robot Y position
+# Robot specific
+robotX = 0.0  # initial robot X position
+robotY = 0.0  # initial robot Y position
 
-goalX = 10.0   #goal X position
-goalY = 10.0   #goal Y position
+goalX = 10.0  # goal X position
+goalY = 10.0  # goal Y position
 
-#Obstical:
+# Obstacle:
 obsX = 7.0
 obsY = 2.0
 
-#Position scaling for grid:
+# Position scaling for grid:
 xGoalOnGrid = goalX * reso
 yGoalOnGrid = goalY * reso
 
@@ -68,28 +68,27 @@ yRobotOnGrid = robotY * reso
 xObsOnGrid = obsX * reso
 yObsOnGrid = obsY * reso
 
-#potential field generation:
-uPot = np.zeros(shape=(len(xAxis),len(yAxis)))
-uAtr = np.zeros(shape=(len(xAxis),len(yAxis)))
-uRep = np.zeros(shape=(len(xAxis),len(yAxis)))
+# potential field generation:
+uPot = np.zeros(shape=(len(xAxis), len(yAxis)))
+uAtr = np.zeros(shape=(len(xAxis), len(yAxis)))
+uRep = np.zeros(shape=(len(xAxis), len(yAxis)))
 
-#Calculate Attraction
+# Calculate Attraction
 for i in range(len(xAxis)):
     for j in range(len(yAxis)):
-        uAtr[i][j] = 1 / 2.0 * KP * math.sqrt(abs(xGoalOnGrid-(i))**2+abs(yGoalOnGrid - (j))**2) /reso
+        uAtr[i][j] = 1 / 2.0 * KP * math.sqrt(abs(xGoalOnGrid - i) ** 2 + abs(yGoalOnGrid - j) ** 2) / reso
 
-
-#Calculate repultion potential:
+# Calculate repulsion potential:
 for i in range(len(xAxis)):
     for j in range(len(yAxis)):
-        rho =  math.sqrt(((xObsOnGrid - (i))**2 + (yObsOnGrid - (j))**2)) /reso
-        if(rho <= rho_node):
-            if(rho==0):
-                uRep[i][j] = np.max(uAtr)/2
-            else :
-                uRep[i][j] = 0.5 * eta * ((1/rho)-(1/rho_node))**2
+        rho = math.sqrt(((xObsOnGrid - i) ** 2 + (yObsOnGrid - j) ** 2)) / reso
+        if rho <= rho_node:
+            if rho == 0:
+                uRep[i][j] = np.max(uAtr) / 2
+            else:
+                uRep[i][j] = 0.5 * eta * ((1 / rho) - (1 / rho_node)) ** 2
 
-            if(uRep[i][j] > eta):
+            if uRep[i][j] > eta:
                 uRep[i][j] = eta
         else:
             uRep[i][j] = 0
@@ -107,8 +106,8 @@ surf = ax.plot_surface(xAxis, yAxis, uPot, cmap=cm.coolwarm, linewidth=0, antial
 # imshow(uPot)
 # colorbar()
 
-#Simulate motion:
-distanceToGoal = math.sqrt((xRobotOnGrid - xGoalOnGrid)**2+(yRobotOnGrid - yGoalOnGrid)**2)
+# Simulate motion:
+distanceToGoal = math.sqrt((xRobotOnGrid - xGoalOnGrid) ** 2 + (yRobotOnGrid - yGoalOnGrid) ** 2)
 distanceTolerance = 1
 
 # while(distanceToGoal >= distanceTolerance):
