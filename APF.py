@@ -24,6 +24,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.ticker import LinearLocator
 import numpy as np
 import math
+import Utilities
 
 # Initialize figure
 fig = plt.figure(figsize=(15, 8))
@@ -105,14 +106,18 @@ surf = ax.plot_surface(xAxis, yAxis, uPot, cmap=cm.viridis, linewidth=0, antiali
 ax.view_init(azim=30)
 
 ax = fig.add_subplot(1, 2, 2)
-imshow(uPot, origin='lower',extent=[0,int(mapBoundaryX),0,int(mapBoundaryY)])
+imshow(uPot, origin='lower', extent=[0, int(mapBoundaryX), 0, int(mapBoundaryY)])
 colorbar()
 
 # Simulate motion:
 distanceToGoal = math.sqrt((xRobotOnGrid - xGoalOnGrid) ** 2 + (yRobotOnGrid - yGoalOnGrid) ** 2)
 distanceTolerance = 1
 
-while(distanceToGoal >= distanceTolerance):
+robotStartPoint = [robotX, robotY]
+goalPoint = [goalX, goalY]
+motionDirection, quadrant = Utilities.getAngleAndDirection(robotStartPoint, goalPoint)
+
+while distanceToGoal >= distanceTolerance:
     moveX = 0.3
     moveY = 0.3
 
@@ -121,7 +126,7 @@ while(distanceToGoal >= distanceTolerance):
     pot = uPot[int(xRobotOnGrid)][int(yRobotOnGrid)]
     distanceToGoal = math.sqrt((xRobotOnGrid - goalX) ** 2 + (yRobotOnGrid - goalY) ** 2)
     print(distanceToGoal)
-    plt.scatter(xRobotOnGrid, yRobotOnGrid,color = "m", marker="h")
+    plt.scatter(xRobotOnGrid, yRobotOnGrid, color="m", marker="h")
     plt.pause(0.005)
 
 plt.show()
