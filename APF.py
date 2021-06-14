@@ -26,8 +26,7 @@ import numpy as np
 import math
 
 # Initialize figure
-fig = plt.figure()
-# fig, ax1 = plt.subplots(subplot_kw={"projection": "3d"})
+fig = plt.figure(figsize=(15, 8))
 ax = fig.add_subplot(1, 2, 1, projection='3d')
 
 # Global Variables:
@@ -102,8 +101,8 @@ uPot = uAtr + uRep
 # print(uPot)
 
 xAxis, yAxis = np.meshgrid(xAxis, yAxis)
-
 surf = ax.plot_surface(xAxis, yAxis, uPot, cmap=cm.viridis, linewidth=0, antialiased=True)
+ax.view_init(azim=30)
 
 ax = fig.add_subplot(1, 2, 2)
 imshow(uPot, origin='lower',extent=[0,int(mapBoundaryX),0,int(mapBoundaryY)])
@@ -113,16 +112,16 @@ colorbar()
 distanceToGoal = math.sqrt((xRobotOnGrid - xGoalOnGrid) ** 2 + (yRobotOnGrid - yGoalOnGrid) ** 2)
 distanceTolerance = 1
 
-# while(distanceToGoal >= distanceTolerance):
-#     moveX = 0.1
-#     moveY = 0.1
-#
-#     xRobotOnGrid += moveX
-#     yRobotOnGrid += moveY
-#     pot = uPot[int(xRobotOnGrid)][int(yRobotOnGrid)]
-#     distanceToGoal = math.sqrt((xRobotOnGrid - goalX) ** 2 + (yRobotOnGrid - goalY) ** 2)
-#     print(distanceToGoal)
-#     plt.scatter(xRobotOnGrid, yRobotOnGrid, np.max(uPot))
-#     plt.pause(0.005)
+while(distanceToGoal >= distanceTolerance):
+    moveX = 0.3
+    moveY = 0.3
+
+    xRobotOnGrid += moveX
+    yRobotOnGrid += moveY
+    pot = uPot[int(xRobotOnGrid)][int(yRobotOnGrid)]
+    distanceToGoal = math.sqrt((xRobotOnGrid - goalX) ** 2 + (yRobotOnGrid - goalY) ** 2)
+    print(distanceToGoal)
+    plt.scatter(xRobotOnGrid, yRobotOnGrid,color = "m", marker="h")
+    plt.pause(0.005)
 
 plt.show()
