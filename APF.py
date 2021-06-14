@@ -26,7 +26,9 @@ import numpy as np
 import math
 
 # Initialize figure
-fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+fig = plt.figure()
+# fig, ax1 = plt.subplots(subplot_kw={"projection": "3d"})
+ax = fig.add_subplot(1, 2, 1, projection='3d')
 
 # Global Variables:
 
@@ -103,8 +105,9 @@ xAxis, yAxis = np.meshgrid(xAxis, yAxis)
 
 surf = ax.plot_surface(xAxis, yAxis, uPot, cmap=cm.coolwarm, linewidth=0, antialiased=True)
 
-# imshow(uPot)
-# colorbar()
+ax = fig.add_subplot(1, 2, 2)
+imshow(uPot)
+colorbar()
 
 # Simulate motion:
 distanceToGoal = math.sqrt((xRobotOnGrid - xGoalOnGrid) ** 2 + (yRobotOnGrid - yGoalOnGrid) ** 2)
