@@ -35,7 +35,7 @@ ax = fig.add_subplot(1, 2, 1, projection='3d')
 # Map specific:
 mapBoundaryX = 11  # Map x length
 mapBoundaryY = 11  # Map y length
-reso = 50  # Map resolution
+reso = 10  # Map resolution
 
 # repulsion gains:
 eta = 5.0
@@ -50,15 +50,15 @@ xAxis = np.linspace(0, mapBoundaryX, spacingResolution)
 yAxis = np.linspace(0, mapBoundaryY, spacingResolution)
 
 # Robot specific
-robotX = 0.0  # initial robot X position
-robotY = 0.0  # initial robot Y position
+robotX = 2.0  # initial robot X position
+robotY = 2.0  # initial robot Y position
 
 goalX = 10.0  # goal X position
 goalY = 10.0  # goal Y position
 
 # Obstacle:
-obsX = 7.0
-obsY = 2.0
+obsX = 5.0
+obsY = 5.0
 
 # Position scaling for grid:
 xGoalOnGrid = goalX * reso
@@ -117,16 +117,34 @@ robotStartPoint = [robotX, robotY]
 goalPoint = [goalX, goalY]
 motionDirection, quadrant = Utilities.getAngleAndDirection(robotStartPoint, goalPoint)
 
-while distanceToGoal >= distanceTolerance:
-    moveX = 0.3
-    moveY = 0.3
+numIterations = 0
+indexX = int(xRobotOnGrid)
+indexY = int(yRobotOnGrid)
 
-    xRobotOnGrid += moveX
-    yRobotOnGrid += moveY
-    pot = uPot[int(xRobotOnGrid)][int(yRobotOnGrid)]
-    distanceToGoal = math.sqrt((xRobotOnGrid - goalX) ** 2 + (yRobotOnGrid - goalY) ** 2)
-    print(distanceToGoal)
-    plt.scatter(xRobotOnGrid, yRobotOnGrid, color="m", marker="h")
+while distanceToGoal >= distanceTolerance or numIterations < 100:
+
+    minVal = 1000
+    minIndex = [indexX, indexY]
+
+    for i in range(-1, 2):
+        for j in range(-1, 2):
+            newindexX = indexX + i
+            newindexY = indexY + j
+            if newindexX < 0 or newindexX > spacingResolution or newindexY < 0 or newindexY > spacingResolution or (i == j and i == 0):
+                pass
+            elif uPot[newindexX][newindexY] < minVal:
+                minVal = uPot[newindexX][newindexY]
+                minIndex = [newindexX, newindexY]
+
+    indexX = minIndex[0]
+    indexY = minIndex[1]
+
+
+    distanceToGoal = math.sqrt((indexX - xGoalOnGrid) ** 2 + (indexY - yGoalOnGrid) ** 2)
+
+    if numIterations % 2 == 0:
+        plt.scatter(indexX/reso, indexY/reso, color="m", marker=".")
     plt.pause(0.005)
+    numIterations += 1
 
 plt.show()

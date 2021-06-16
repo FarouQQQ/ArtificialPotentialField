@@ -24,6 +24,15 @@ def getAngleAndDirection(point1,point2):
 
     return angle, quad
 
+def directions():
+    return [[-1,1],
+            [0,1],
+            [1,1],
+            [1,0],
+            [1,-1],
+            [-1,0],
+            [-1,-1],
+            ]
 
 if __name__ == '__main__':
     point1 = [0,0]
